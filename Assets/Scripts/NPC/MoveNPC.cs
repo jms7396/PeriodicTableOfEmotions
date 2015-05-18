@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
-
+using Conversation;
 
 namespace NPC
 {
@@ -14,6 +14,9 @@ namespace NPC
 		public bool isMatched = false;
 		public GameObject sparkle1;
 		public GameObject sparkle2;
+		// Gets the result of two electron charges
+		int result = 0;
+		bool runOnce = false;
 
 
 		[ContextMenu("Is the object following the player?")]
@@ -37,7 +40,8 @@ namespace NPC
 			}
 			if(col.gameObject.tag == "Atom")
 			{
-				if(isMoving == true && col.gameObject.GetComponent<AtomNPC>().sentiment == Sentiment.Trusting && col.gameObject.GetComponent<AtomNPC>().state != State.InLove)
+				result = this.gameObject.GetComponent<AtomNPC>().electronCharge + col.gameObject.GetComponent<AtomNPC>().electronCharge;
+				if(isMoving == true && col.gameObject.GetComponent<AtomNPC>().sentiment == Sentiment.Trusting && col.gameObject.GetComponent<AtomNPC>().state != State.InLove && result == 8)
 				{
 					this.gameObject.GetComponent<AtomNPC>().state = State.InLove;
 					col.gameObject.GetComponent<AtomNPC>().state = State.InLove;
@@ -58,14 +62,28 @@ namespace NPC
 						sparkle1.transform.position = sparklePos;
 					}
 				}
+				if (result != 8 && isMoving && col.gameObject.GetComponent<AtomNPC>().sentiment == Sentiment.Trusting) {
+					//Debug.Log("Can't match");
+					this.gameObject.GetComponent<AtomNPC> ().convo.conversation = GameObject.Find ("InvalidMatch").GetComponent<Container> ();
+					this.gameObject.GetComponent<AtomNPC> ().convo.ResetConversation ();
+					this.gameObject.GetComponent<AtomNPC> ().convo.UpdateConversation ();
+					this.gameObject.GetComponent<AtomNPC> ().convo.EnableConversation ();
+					runOnce = true;
+				}
 			}
 		}
+
 
 		void OnTriggerExit(Collider col)
 		{
 			if(col.gameObject.tag == "Player")
 			{
 				playerHere = false;
+			}
+			if (col.gameObject.tag == "Atom")
+			{
+				this.gameObject.GetComponent<AtomNPC> ().convo.LeaveConversation ();
+				//runOnce = false;
 			}
 		}
 
