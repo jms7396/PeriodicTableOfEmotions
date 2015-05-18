@@ -14,6 +14,7 @@ namespace NPC
 		public bool isMatched = false;
 		public GameObject sparkle1;
 		public GameObject sparkle2;
+		public GameObject sparkle3;
 		// Gets the result of two electron charges
 		int result = 0;
 		bool runOnce = false;
@@ -49,17 +50,26 @@ namespace NPC
 					col.gameObject.GetComponent<MoveNPC>().isMatched = true;
 					this.gameObject.GetComponent<AtomNPC>().Match();
 					col.gameObject.GetComponent<AtomNPC>().Match();
-					if(sparkle1.activeSelf == true)
+					if(sparkle2.activeSelf == true)
+					{
+						Vector3 sparklePos = (this.gameObject.transform.position + col.gameObject.transform.position)/2;
+						sparkle3.SetActive(true);
+						sparkle3.transform.position = sparklePos;
+						player.matchesMade++;
+					}
+					else if (sparkle1.activeSelf == true)
 					{
 						Vector3 sparklePos = (this.gameObject.transform.position + col.gameObject.transform.position)/2;
 						sparkle2.SetActive(true);
 						sparkle2.transform.position = sparklePos;
+						player.matchesMade++;
 					}
 					else
 					{
 						Vector3 sparklePos = (this.gameObject.transform.position + col.gameObject.transform.position)/2;
 						sparkle1.SetActive(true);
 						sparkle1.transform.position = sparklePos;
+						player.matchesMade++;
 					}
 				}
 				if (result != 8 && isMoving && col.gameObject.GetComponent<AtomNPC>().sentiment == Sentiment.Trusting) {

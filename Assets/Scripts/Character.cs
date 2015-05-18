@@ -37,6 +37,9 @@ public class Character : MonoBehaviour
 	public PlayerState playerState;
 	public MatchingState matchingState;
 
+	// Int to keep track of number of matches made
+	public int matchesMade;
+
     MouseLook ml;
 
     #region UI Feedback
@@ -52,6 +55,8 @@ public class Character : MonoBehaviour
 
         Screen.lockCursor = true;
         Screen.showCursor = false;
+
+		matchesMade = 0;
 
 
         this.CheckComponent(ref ml);
@@ -115,6 +120,11 @@ public class Character : MonoBehaviour
 				matchingState = MatchingState.notMatching;
 			}
 			*/
+		}
+
+		if(matchesMade >= 3)
+		{
+			this.gameObject.GetComponent<SceneTransitioner>().switchToScene();
 		}
     }
 
